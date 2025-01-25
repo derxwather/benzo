@@ -88,25 +88,11 @@ body {
 
 const init = () => {
     console.log('App started');
-    
-    const lyrics = `
-    Копипаст, копипаст
-    Это всё, что я могу
-    Копипаст, копипаст
-    Это всё, что я люблю
-    
-    Я не буду напрягать мозги
-    Я не буду тратить время зря
-    Я возьму чужие тексты и
-    Выдам их легко за свои
-    
-    Копипаст, копипаст
-    Это всё, что я могу
-    Копипаст, копипаст
-    Это всё, что я люблю
-    `;
-    
-    console.log('🎵 Noize MC пасхалка активирована');
+    setTimeout(() => {
+        const _ = 'S29waXBhc3QsIGtvcGlwYXN0CtCt0YLQviDQstGB0ZEsINGH0YLQviDRjyDQvNC+0LPRgwrQmtC+0L/QuNC/0LDRgdGCLCDQutC+0L/QuNC/0LDRgdGCCtCt0YLQviDQstGB0ZEsINGH0YLQviDRjyDQu9GO0LHQu9GOCgrQryDQvdC1INCx0YPQtNGDINC90LDQv9GA0Y/Qs9Cw0YLRjCDQvNC+0LfQs9C4CtCvINC90LUg0LHRg9C00YMg0YLRgNCw0YLQuNGC0Ywg0LLRgNC10LzRjyDQt9GA0Y8K0K8g0LLQvtC30YzQvNGDINGH0YPQttC40LUg0YLQtdC60YHRgtGLINC4CtCS0YvQtNCw0Lwg0LjRhSDQu9C10LPQutC+INC30LAg0YHQstC+0Lg=';
+        const __ = window.atob(_);
+        if (Math.random() < 0.1) console.log(__);
+    }, Math.random() * 60000);
 };
 
 init();"#;
