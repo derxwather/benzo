@@ -22,9 +22,12 @@ cargo build --release
 
 echo "📥 Устанавливаем..."
 sudo cp target/release/benzo /usr/local/bin/
+sudo chmod +x /usr/local/bin/benzo
 
 # Чистим за собой
 cd - > /dev/null
 rm -rf "$TMP_DIR"
 
-echo "✅ benzo установлен! Попробуй: benzo +h" 
+echo "✅ benzo установлен! Попробуй: benzo +h"
+
+echo "Готово! Теперь можно использовать команду 'benzo' из любой директории" 
