@@ -2,6 +2,10 @@
 name = "benzo"
 version = "0.1.0"
 edition = "2021"
+authors = ["derxwather"]
+description = "Hardcore Modular Utils - быстрое создание проектов"
+repository = "https://github.com/derxwather/benzo"
+license = "MIT"
 
 [dependencies]
 dialoguer = "0.11.0"
