@@ -1,5 +1,5 @@
-## benzo [HMU]
-># Hardcore Modular Utils - генератор проектов для задротов
+# benzo [HMU]
+>### Hardcore Modular Utils - генератор проектов для задротов
  support only linux (stable on fedora)
 
 ## 🚀 Установка
