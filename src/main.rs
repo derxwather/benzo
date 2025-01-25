@@ -87,12 +87,24 @@ body {
     let main_js = r#"const app = document.getElementById('app');
 
 const init = () => {
-    console.log('App started');
-    setTimeout(() => {
-        const _ = 'S29waXBhc3QsIGtvcGlwYXN0CtCt0YLQviDQstGB0ZEsINGH0YLQviDRjyDQvNC+0LPRgwrQmtC+0L/QuNC/0LDRgdGCLCDQutC+0L/QuNC/0LDRgdGCCtCt0YLQviDQstGB0ZEsINGH0YLQviDRjyDQu9GO0LHQu9GOCgrQryDQvdC1INCx0YPQtNGDINC90LDQv9GA0Y/Qs9Cw0YLRjCDQvNC+0LfQs9C4CtCvINC90LUg0LHRg9C00YMg0YLRgNCw0YLQuNGC0Ywg0LLRgNC10LzRjyDQt9GA0Y8K0K8g0LLQvtC30YzQvNGDINGH0YPQttC40LUg0YLQtdC60YHRgtGLINC4CtCS0YvQtNCw0Lwg0LjRhSDQu9C10LPQutC+INC30LAg0YHQstC+0Lg=';
-        const __ = window.atob(_);
-        if (Math.random() < 0.1) console.log(__);
-    }, Math.random() * 60000);
+    let devtools = false;
+    const threshold = 160;
+    const emitTime = new Date();
+    
+    const devtoolsCheck = ({timeStamp}) => {
+        const diff = timeStamp - emitTime;
+        if (diff > threshold) {
+            const _ = 'S29waXBhc3QsIGtvcGlwYXN0CtCt0YLQviDQstGB0ZEsINGH0YLQviDRjyDQvNC+0LPRgwrQmtC+0L/QuNC/0LDRgdGCLCDQutC+0L/QuNC/0LDRgdGCCtCt0YLQviDQstGB0ZEsINGH0YLQviDRjyDQu9GO0LHQu9GOCgrQryDQvdC1INCx0YPQtNGDINC90LDQv9GA0Y/Qs9Cw0YLRjCDQvNC+0LfQs9C4CtCvINC90LUg0LHRg9C00YMg0YLRgNCw0YLQuNGC0Ywg0LLRgNC10LzRjyDQt9GA0Y8K0K8g0LLQvtC30YzQvNGDINGH0YPQttC40LUg0YLQtdC60YHRgtGLINC4CtCS0YvQtNCw0Lwg0LjRhSDQu9C10LPQutC+INC30LAg0YHQstC+0Lg=';
+            console.log(window.atob(_));
+            devtools = true;
+            window.removeEventListener('devtoolschange', devtoolsCheck);
+        }
+    };
+
+    window.addEventListener('devtoolschange', devtoolsCheck);
+    setInterval(() => window.dispatchEvent(new CustomEvent('devtoolschange', {
+        detail: { timeStamp: new Date().getTime() }
+    })), 500);
 };
 
 init();"#;
