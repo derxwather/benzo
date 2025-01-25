@@ -6,23 +6,56 @@ use console::style;
 
 fn create_python_project(project_name: &str) {
     if !project_name.is_empty() {
-        fs::create_dir_all(project_name).unwrap_or_else(|_| panic!("не смог создать папку проекта"));
-        std::env::set_current_dir(project_name).unwrap_or_else(|_| panic!("не смог перейти в папку проекта"));
+        if let Err(e) = fs::create_dir_all(project_name) {
+            println!("\n{} {}: {}", style("Ошибка").red(), style("не могу создать папку").red(), style(project_name).yellow());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
+        if let Err(e) = std::env::set_current_dir(project_name) {
+            println!("\n{} {}: {}", style("Ошибка").red(), style("не могу перейти в папку").red(), style(project_name).yellow());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
     }
 
-    fs::create_dir("src").unwrap_or_else(|_| println!("src папка уже есть"));
-    fs::create_dir("tests").unwrap_or_else(|_| println!("tests папка уже есть"));
+    if let Err(e) = fs::create_dir("src") {
+        if e.kind() != std::io::ErrorKind::AlreadyExists {
+            println!("\n{} {}", style("Ошибка").red(), style("не могу создать папку src").red());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
+    }
+    
+    if let Err(e) = fs::create_dir("tests") {
+        if e.kind() != std::io::ErrorKind::AlreadyExists {
+            println!("\n{} {}", style("Ошибка").red(), style("не могу создать папку tests").red());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
+    }
     
     let reqs = "requests==2.31.0\npytest==7.4.3\nblack==23.11.0";
-    fs::write("requirements.txt", reqs).unwrap_or_else(|_| println!("не смог создать requirements.txt"));
+    if let Err(e) = fs::write("requirements.txt", reqs) {
+        println!("\n{} {}", style("Ошибка").red(), style("не могу создать requirements.txt").red());
+        println!("{}: {}", style("Причина").red(), e);
+        return;
+    }
     
     let gitignore = "venv/\n__pycache__/\n*.pyc\n.pytest_cache/\n.env";
-    fs::write(".gitignore", gitignore).unwrap_or_else(|_| println!("не смог создать .gitignore"));
+    if let Err(e) = fs::write(".gitignore", gitignore) {
+        println!("\n{} {}", style("Ошибка").red(), style("не могу создать .gitignore").red());
+        println!("{}: {}", style("Причина").red(), e);
+        return;
+    }
     
-    Command::new("python3")
-        .args(["-m", "venv", "venv"])
-        .output()
-        .unwrap_or_else(|_| panic!("не смог создать виртуалку"));
+    match Command::new("python3").args(["-m", "venv", "venv"]).output() {
+        Ok(_) => (),
+        Err(e) => {
+            println!("\n{} {}", style("Ошибка").red(), style("не могу создать виртуальное окружение").red());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
+    }
         
     println!("\n{}", style("Python проект создан").green());
     if !project_name.is_empty() {
@@ -34,13 +67,41 @@ fn create_python_project(project_name: &str) {
 
 fn create_web_project(project_name: &str) {
     if !project_name.is_empty() {
-        fs::create_dir_all(project_name).unwrap_or_else(|_| panic!("не смог создать папку проекта"));
-        std::env::set_current_dir(project_name).unwrap_or_else(|_| panic!("не смог перейти в папку проекта"));
+        if let Err(e) = fs::create_dir_all(project_name) {
+            println!("\n{} {}: {}", style("Ошибка").red(), style("не могу создать папку").red(), style(project_name).yellow());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
+        if let Err(e) = std::env::set_current_dir(project_name) {
+            println!("\n{} {}: {}", style("Ошибка").red(), style("не могу перейти в папку").red(), style(project_name).yellow());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
     }
 
-    fs::create_dir("css").unwrap_or_else(|_| println!("css папка уже есть"));
-    fs::create_dir("js").unwrap_or_else(|_| println!("js папка уже есть"));
-    fs::create_dir("assets").unwrap_or_else(|_| println!("assets папка уже есть"));
+    if let Err(e) = fs::create_dir("css") {
+        if e.kind() != std::io::ErrorKind::AlreadyExists {
+            println!("\n{} {}", style("Ошибка").red(), style("не могу создать папку css").red());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
+    }
+    
+    if let Err(e) = fs::create_dir("js") {
+        if e.kind() != std::io::ErrorKind::AlreadyExists {
+            println!("\n{} {}", style("Ошибка").red(), style("не могу создать папку js").red());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
+    }
+    
+    if let Err(e) = fs::create_dir("assets") {
+        if e.kind() != std::io::ErrorKind::AlreadyExists {
+            println!("\n{} {}", style("Ошибка").red(), style("не могу создать папку assets").red());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
+    }
     
     let html = r#"<!DOCTYPE html>
 <html lang="ru">
@@ -90,10 +151,29 @@ const init = () => {
 };
 init();"#;
 
-    fs::write("index.html", html).unwrap_or_else(|_| println!("не смог создать index.html"));
-    fs::write("css/reset.css", reset_css).unwrap_or_else(|_| println!("не смог создать reset.css"));
-    fs::write("css/style.css", style_css).unwrap_or_else(|_| println!("не смог создать style.css"));
-    fs::write("js/main.js", main_js).unwrap_or_else(|_| println!("не смог создать main.js"));
+    if let Err(e) = fs::write("index.html", html) {
+        println!("\n{} {}", style("Ошибка").red(), style("не могу создать index.html").red());
+        println!("{}: {}", style("Причина").red(), e);
+        return;
+    }
+    
+    if let Err(e) = fs::write("css/reset.css", reset_css) {
+        println!("\n{} {}", style("Ошибка").red(), style("не могу создать reset.css").red());
+        println!("{}: {}", style("Причина").red(), e);
+        return;
+    }
+    
+    if let Err(e) = fs::write("css/style.css", style_css) {
+        println!("\n{} {}", style("Ошибка").red(), style("не могу создать style.css").red());
+        println!("{}: {}", style("Причина").red(), e);
+        return;
+    }
+    
+    if let Err(e) = fs::write("js/main.js", main_js) {
+        println!("\n{} {}", style("Ошибка").red(), style("не могу создать main.js").red());
+        println!("{}: {}", style("Причина").red(), e);
+        return;
+    }
     
     println!("\n{}", style("Web проект создан").green());
     if !project_name.is_empty() {
@@ -103,8 +183,16 @@ init();"#;
 
 fn create_tgbot_project(project_name: &str) {
     if !project_name.is_empty() {
-        fs::create_dir_all(project_name).unwrap_or_else(|_| panic!("не смог создать папку проекта"));
-        std::env::set_current_dir(project_name).unwrap_or_else(|_| panic!("не смог перейти в папку проекта"));
+        if let Err(e) = fs::create_dir_all(project_name) {
+            println!("\n{} {}: {}", style("Ошибка").red(), style("не могу создать папку").red(), style(project_name).yellow());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
+        if let Err(e) = std::env::set_current_dir(project_name) {
+            println!("\n{} {}: {}", style("Ошибка").red(), style("не могу перейти в папку").red(), style(project_name).yellow());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
     }
 
     let main_py = r#"from aiogram import Bot, Dispatcher, Router
@@ -134,15 +222,38 @@ if __name__ == "__main__":
     let gitignore = "venv/\n__pycache__/\n*.pyc\n.env";
     let env = "BOT_TOKEN=твой_токен_тут";
     
-    fs::write("bot.py", main_py).unwrap_or_else(|_| println!("не смог создать bot.py"));
-    fs::write("requirements.txt", reqs).unwrap_or_else(|_| println!("не смог создать requirements.txt"));
-    fs::write(".gitignore", gitignore).unwrap_or_else(|_| println!("не смог создать .gitignore"));
-    fs::write(".env", env).unwrap_or_else(|_| println!("не смог создать .env"));
+    if let Err(e) = fs::write("bot.py", main_py) {
+        println!("\n{} {}", style("Ошибка").red(), style("не могу создать bot.py").red());
+        println!("{}: {}", style("Причина").red(), e);
+        return;
+    }
     
-    Command::new("python3")
-        .args(["-m", "venv", "venv"])
-        .output()
-        .unwrap_or_else(|_| panic!("не смог создать виртуалку"));
+    if let Err(e) = fs::write("requirements.txt", reqs) {
+        println!("\n{} {}", style("Ошибка").red(), style("не могу создать requirements.txt").red());
+        println!("{}: {}", style("Причина").red(), e);
+        return;
+    }
+    
+    if let Err(e) = fs::write(".gitignore", gitignore) {
+        println!("\n{} {}", style("Ошибка").red(), style("не могу создать .gitignore").red());
+        println!("{}: {}", style("Причина").red(), e);
+        return;
+    }
+    
+    if let Err(e) = fs::write(".env", env) {
+        println!("\n{} {}", style("Ошибка").red(), style("не могу создать .env").red());
+        println!("{}: {}", style("Причина").red(), e);
+        return;
+    }
+    
+    match Command::new("python3").args(["-m", "venv", "venv"]).output() {
+        Ok(_) => (),
+        Err(e) => {
+            println!("\n{} {}", style("Ошибка").red(), style("не могу создать виртуальное окружение").red());
+            println!("{}: {}", style("Причина").red(), e);
+            return;
+        }
+    }
         
     println!("\n{}", style("Telegram бот создан").green());
     if !project_name.is_empty() {
